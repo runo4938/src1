@@ -18,6 +18,7 @@ int i = 0;
 
 CRGB leds[NUM_LEDS];
 
+// for LED RGB indicator
 void setup()
 {
   FastLED.addLeds<SK6812, DATA_PIN, GRB>(leds, NUM_LEDS);
