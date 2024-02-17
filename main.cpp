@@ -11,7 +11,7 @@ TFT_eSPI tft = TFT_eSPI();
 
 // #include <ArduinoJson.h> //https://github.com/bblanchon/ArduinoJson
 #include <FastLED.h>
-
+//second editting
 #define NUM_LEDS 1
 #define DATA_PIN 48
 int i = 0;
