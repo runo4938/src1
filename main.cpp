@@ -15,7 +15,7 @@ TFT_eSPI tft = TFT_eSPI();
 #define NUM_LEDS 1
 #define DATA_PIN 48
 int i = 0;
-
+int k=9;
 CRGB leds[NUM_LEDS];
 
 // for LED RGB indicator
