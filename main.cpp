@@ -152,7 +152,7 @@ bool downloadFirmware()
 
   return stat;
 }
-
+ 
 bool checkFirmware()
 {
   HTTPClient http;
