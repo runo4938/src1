@@ -22,7 +22,7 @@ String baseUrl = "https://github.com/runo4938/src1/blob/master/";
 String checkFile = "update.json";
 /* end of script data */
 
-int fwVersion = 0;
+int fwVersion = 2;
 bool fwCheck = false;
 String fwUrl = "", fwName = "";
 
