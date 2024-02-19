@@ -18,7 +18,7 @@ WiFiMulti wifiMulti;
 /* this info will be read by the python script */
 int currentVersion = 2; // increment currentVersion in each release
 
-String baseUrl = "https://github.com/runo4938/src1.git";
+String baseUrl = "https://github.com/runo4938/src1/blob/master/";
 String checkFile = "update.json";
 /* end of script data */
 
@@ -152,7 +152,7 @@ bool downloadFirmware()
 
   return stat;
 }
- 
+
 bool checkFirmware()
 {
   HTTPClient http;

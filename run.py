@@ -10,7 +10,7 @@ file = open(project + '.ino', 'r')
 lines = file.readlines()
 file.close()
 
-versionCode = 0
+versionCode = 5
 baseUrl = ""
 checkFile = ""
 fileName = ""
