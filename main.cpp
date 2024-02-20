@@ -14,11 +14,13 @@
 #define FORMAT_SPIFFS_IF_FAILED true
 
 WiFiMulti wifiMulti;
+HTTPClient http;
 
 /* this info will be read by the python script */
-int currentVersion = 1; // increment currentVersion in each release
+int currentVersion = 0; // increment currentVersion in each release
 
-String baseUrl = "https://github.com/runo4938/src1/blob/master/";
+String baseUrljson = "https://github.com/runo4938/src1/blob/master/update.json";
+String baseUrlfwName = "https://github.com/runo4938/src1/blob/master/firmware.bin";
 String checkFile = "update.json";
 /* end of script data */
 
@@ -127,7 +129,7 @@ bool downloadFirmware()
   File f = SPIFFS.open("/firmware.bin", "w");
   if (f)
   {
-    http.begin(fwUrl);
+    http.begin(baseUrlfwName);
     int httpCode = http.GET();
     if (httpCode > 0)
     {
@@ -156,18 +158,33 @@ bool downloadFirmware()
 bool checkFirmware()
 {
   HTTPClient http;
-  http.begin(baseUrl + checkFile);
+  http.begin(baseUrljson);
   int httpCode = http.GET();
+
+  Serial.print("httpCode =");
+  Serial.println(httpCode);
+
   bool stat = false;
-  String payload = http.getString();
-  Serial.println(payload);
-  DynamicJsonDocument json(1024);
+  Stream &payload = http.getStream();
+  // Serial.println(payload);
+  DynamicJsonDocument json(2048);
   deserializeJson(json, payload);
+
+  // Serial.print(String(json));
+
   if (httpCode == HTTP_CODE_OK)
   {
-    fwVersion = json["versionCode"].as<int>();
-    fwName = json["fileName"].as<String>();
-    fwUrl = baseUrl + fwName;
+    fwVersion = 2;//json["versionCode"].as<int>();
+    fwName = "firmware.bin";//baseUrlfwName;//json["fileName"].as<String>();
+    fwUrl = baseUrlfwName;    // baseUrl + fwName;
+
+    Serial.print("fwVersion =");
+    Serial.println(fwVersion);
+    Serial.print("currentVersion =");
+    Serial.println(currentVersion);
+    Serial.print("fieName = ");
+    Serial.println(fwName);
+
     if (fwVersion > currentVersion)
     {
       Serial.println("Firmware update available");
