@@ -1,30 +1,25 @@
 #include <Arduino.h>
-// #define LED_BUILT 5
-// #include <FastLED.h>
-
 #include <WiFi.h>
 #include <WiFiMulti.h>
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
+
 #include <Update.h>
 #include "FS.h"
 #include "SPIFFS.h"
-// TFT_eSPI tft = TFT_eSPI();
 
 #define FORMAT_SPIFFS_IF_FAILED true
 
 WiFiMulti wifiMulti;
-HTTPClient http;
 
 /* this info will be read by the python script */
 int currentVersion = 0; // increment currentVersion in each release
 
-String baseUrljson = "https://github.com/runo4938/src1/blob/master/update.json";
-String baseUrlfwName = "https://github.com/runo4938/src1/blob/master/firmware.bin";
+String baseUrl = "https://raw.githubusercontent.com/runo4938/src1/master/";
 String checkFile = "update.json";
 /* end of script data */
 
-int fwVersion = 2;
+int fwVersion = 0;
 bool fwCheck = false;
 String fwUrl = "", fwName = "";
 
@@ -90,7 +85,7 @@ void updateFromFS(fs::FS &fs)
   {
     if (updateBin.isDirectory())
     {
-      Serial.println("Error, firmware.bin is not a file");
+      Serial.println("Error, update.bin is not a file");
       updateBin.close();
       return;
     }
@@ -129,7 +124,7 @@ bool downloadFirmware()
   File f = SPIFFS.open("/firmware.bin", "w");
   if (f)
   {
-    http.begin(baseUrlfwName);
+    http.begin(fwUrl);
     int httpCode = http.GET();
     if (httpCode > 0)
     {
@@ -158,33 +153,18 @@ bool downloadFirmware()
 bool checkFirmware()
 {
   HTTPClient http;
-  http.begin(baseUrljson);
+  http.begin(baseUrl + checkFile);
   int httpCode = http.GET();
-
-  Serial.print("httpCode =");
-  Serial.println(httpCode);
-
   bool stat = false;
-  Stream &payload = http.getStream();
-  // Serial.println(payload);
-  DynamicJsonDocument json(2048);
+  String payload = http.getString();
+  Serial.println(payload);
+  DynamicJsonDocument json(1024);
   deserializeJson(json, payload);
-
-  // Serial.print(String(json));
-
   if (httpCode == HTTP_CODE_OK)
   {
-    fwVersion = 2;//json["versionCode"].as<int>();
-    fwName = "firmware.bin";//baseUrlfwName;//json["fileName"].as<String>();
-    fwUrl = baseUrlfwName;    // baseUrl + fwName;
-
-    Serial.print("fwVersion =");
-    Serial.println(fwVersion);
-    Serial.print("currentVersion =");
-    Serial.println(currentVersion);
-    Serial.print("fieName = ");
-    Serial.println(fwName);
-
+    fwVersion = json["versionCode"].as<int>();
+    fwName = json["fileName"].as<String>();
+    fwUrl = baseUrl + fwName;
     if (fwVersion > currentVersion)
     {
       Serial.println("Firmware update available");
@@ -204,36 +184,9 @@ bool checkFirmware()
   return stat;
 }
 
-// second editting
-//  #define NUM_LEDS 1
-//  #define DATA_PIN 48
-int i = 0;
-int k = 9;
-// CRGB leds[NUM_LEDS];
-
-// for LED RGB indicator
 void setup()
 {
-  // FastLED.addLeds<SK6812, DATA_PIN, GRB>(leds, NUM_LEDS);
-
-  // put your setup code here, to run once:
   Serial.begin(115200);
-  // pinMode(LED_BUILT, OUTPUT);
-  // analogWrite(LED_BUILT, 70);
-  Serial.println();
-
-  // tft.begin();
-  // tft.setRotation(3);
-  // tft.fillScreen(TFT_BLACK);
-
-  // tft.initDMA();
-  // // tft.fillScreen(TFT_BLACK);
-  // tft.setTextColor(TFT_WHITE, TFT_BLACK);
-  // tft.setTextSize(2);
-  // tft.setCursor(40, 60);
-  // tft.println("Starting Radio...");
-
-  Serial.println("\n\n================================");
   Serial.println("Firmware Updates from Github");
   if (!SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED))
   {
