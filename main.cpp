@@ -3,7 +3,7 @@
 #include <WiFiMulti.h>
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
-
+#include<SD.h>
 #include <Update.h>
 #include "FS.h"
 #include "SPIFFS.h"
