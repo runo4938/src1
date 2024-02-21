@@ -1,4 +1,9 @@
 {
+<<<<<<< HEAD
 	"versionCode" : 0,
 	"fileName" : "firmware.bin"
+=======
+	"versionCode": 1,
+	"fileName": "firmware.bin"
+>>>>>>> a812caaa906ec25c2b5a6482a1eabd2f8eaef546
 }
